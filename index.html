@@ -9,29 +9,39 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="header-inner">
+    <!-- ── 상단 헤더 ── -->
+    <header class="site-header">
+        <div class="header-top">
             <div class="logo">
                 <img src="logo.svg" alt="어디갈까" class="logo-img">
             </div>
-            <button id="theme-toggle" aria-label="테마 전환">🌙</button>
+            <div class="header-search">
+                <span class="search-icon">🔍</span>
+                <div class="search-text">
+                    <span class="search-main">어디로 가세요?</span>
+                    <span class="search-sep">·</span>
+                    <span class="search-sub">월 선택 · 지역 선택</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" aria-label="테마 전환">🌙</button>
+            </div>
         </div>
-        <p class="tagline">월별 · 지역별 한국 여행지 추천 서비스</p>
+
+        <!-- ── Airbnb식 월 카테고리 바 ── -->
+        <div class="month-bar-outer">
+            <div class="month-bar" id="month-tabs"></div>
+        </div>
     </header>
 
     <main>
-        <section class="filter-section">
-            <div class="filter-group">
-                <h2 class="filter-label">📅 여행 월 선택</h2>
-                <div class="month-tabs" id="month-tabs"></div>
-            </div>
-            <div class="filter-group">
-                <h2 class="filter-label">📍 지역 선택</h2>
-                <div class="province-row" id="province-row"></div>
-                <div class="city-row" id="city-row"></div>
-            </div>
-        </section>
+        <!-- ── 지역 필터 (컴팩트) ── -->
+        <div class="region-section">
+            <div class="province-row" id="province-row"></div>
+            <div class="city-row" id="city-row"></div>
+        </div>
 
+        <!-- ── 결과 ── -->
         <section class="results-section">
             <p class="results-summary" id="results-summary"></p>
             <div class="cards-grid" id="cards-grid"></div>
@@ -44,7 +54,11 @@
     </main>
 
     <footer>
-        <p>© 2024 어디갈까 &nbsp;|&nbsp; 한국 여행의 모든 것</p>
+        <div class="footer-inner">
+            <span>© 2024 어디갈까</span>
+            <span class="footer-sep">·</span>
+            <span>한국 여행의 모든 것</span>
+        </div>
     </footer>
 
     <script src="main.js"></script>

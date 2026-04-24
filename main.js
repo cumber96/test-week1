@@ -307,24 +307,35 @@ const destinations = [
 
 /* ── 상태 ── */
 const monthNames = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
+const monthIcons  = ["❄️","🌨️","🌱","🌸","🌿","☀️","🌊","🏖️","🍃","🍂","🍁","⛄"];
+
 let selectedMonth = new Date().getMonth() + 1;
 let selectedProvince = "전체";
 let selectedCity = "전체";
 
-/* ── 렌더링: 월 탭 ── */
+/* ── 렌더링: 월 탭 (Airbnb 카테고리 바) ── */
 function renderMonthTabs() {
     const container = document.getElementById("month-tabs");
     container.innerHTML = monthNames.map((name, i) => {
         const m = i + 1;
-        return `<button class="month-tab ${m === selectedMonth ? "active" : ""}" data-month="${m}">${name}</button>`;
+        return `
+            <button class="month-tab ${m === selectedMonth ? "active" : ""}" data-month="${m}">
+                <span class="tab-icon">${monthIcons[i]}</span>
+                <span class="tab-label">${name}</span>
+            </button>`;
     }).join("");
     container.querySelectorAll(".month-tab").forEach(btn => {
         btn.addEventListener("click", () => {
             selectedMonth = parseInt(btn.dataset.month);
             renderMonthTabs();
+            // 선택된 탭으로 스크롤
+            btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
             renderCards();
         });
     });
+    // 초기 로드 시 현재 월로 스크롤
+    const activeTab = container.querySelector(".month-tab.active");
+    if (activeTab) activeTab.scrollIntoView({ block: "nearest", inline: "center" });
 }
 
 /* ── 렌더링: 광역시/도 버튼 (1단계) ── */
@@ -415,31 +426,34 @@ function renderCards() {
 
     grid.innerHTML = filtered.map(d => `
         <div class="card">
-            <div class="card-hero" style="background: ${d.gradient}">
+            <div class="card-image" style="background: ${d.gradient}">
                 <span class="card-emoji">${d.emoji}</span>
+                <button class="card-save" aria-label="저장">♡</button>
             </div>
-            <div class="card-body">
-                <div class="card-top">
-                    <h3 class="card-name">${d.name}</h3>
-                    <span class="region-badge">${d.province} · ${d.city}</span>
-                </div>
-                <p class="card-desc">${d.description}</p>
-                <div class="info-grid">
-                    <div class="info-section">
-                        <div class="info-label"><span class="info-icon">🍽️</span> 제철음식</div>
-                        <ul class="info-list">${d.seasonal_food.map(f => `<li>${f}</li>`).join("")}</ul>
+            <div class="card-info">
+                <div class="card-location">${d.province} · ${d.city}</div>
+                <div class="card-title">${d.name}</div>
+                <p class="card-desc-short">${d.description}</p>
+                <div class="card-highlights">
+                    <div class="hl-row">
+                        <span class="hl-icon">🍽️</span>
+                        <span class="hl-key">제철음식</span>
+                        <span class="hl-val">${d.seasonal_food[0]}</span>
                     </div>
-                    <div class="info-section">
-                        <div class="info-label"><span class="info-icon">🎉</span> 축제</div>
-                        <ul class="info-list">${d.festivals.map(f => `<li>${f}</li>`).join("")}</ul>
+                    <div class="hl-row">
+                        <span class="hl-icon">🎉</span>
+                        <span class="hl-key">축제</span>
+                        <span class="hl-val">${d.festivals[0]}</span>
                     </div>
-                    <div class="info-section">
-                        <div class="info-label"><span class="info-icon">🏨</span> 숙소</div>
-                        <ul class="info-list">${d.accommodations.map(a => `<li>${a}</li>`).join("")}</ul>
+                    <div class="hl-row">
+                        <span class="hl-icon">🏨</span>
+                        <span class="hl-key">숙소</span>
+                        <span class="hl-val">${d.accommodations[0]}</span>
                     </div>
-                    <div class="info-section">
-                        <div class="info-label"><span class="info-icon">☕</span> 카페</div>
-                        <ul class="info-list">${d.cafes.map(c => `<li>${c}</li>`).join("")}</ul>
+                    <div class="hl-row">
+                        <span class="hl-icon">☕</span>
+                        <span class="hl-key">카페</span>
+                        <span class="hl-val">${d.cafes[0]}</span>
                     </div>
                 </div>
             </div>
