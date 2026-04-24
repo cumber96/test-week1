@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 54" fill="none">
+  <defs>
+    <linearGradient id="pinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF8C5A"/>
+      <stop offset="100%" stop-color="#E85520"/>
+    </linearGradient>
+    <filter id="pinShadow" x="-30%" y="-10%" width="160%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#E85520" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- 지도 핀 본체 -->
+  <path d="M23 2 C14.2 2 8 8.8 8 16.5 C8 27.5 23 48 23 48 C23 48 38 27.5 38 16.5 C38 8.8 31.8 2 23 2Z"
+        fill="url(#pinGrad)" filter="url(#pinShadow)"/>
+
+  <!-- 핀 상단 하이라이트 (입체감) -->
+  <path d="M23 2 C14.2 2 8 8.8 8 16.5 C8 11.5 12.5 6.5 19 4Z"
+        fill="white" opacity="0.22"/>
+
+  <!-- 핀 내부 흰 원 -->
+  <circle cx="23" cy="16.5" r="8" fill="white"/>
+
+  <!-- 내부 원 하이라이트 -->
+  <circle cx="20.5" cy="14" r="2.2" fill="white" opacity="0.55"/>
+
+  <!-- 내부 오렌지 원 (dot) -->
+  <circle cx="23" cy="16.5" r="3.5" fill="url(#pinGrad)"/>
+
+  <!-- "어디갈까" 텍스트 -->
+  <text
+    x="48"
+    y="36"
+    font-family="-apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Segoe UI', sans-serif"
+    font-size="28"
+    font-weight="800"
+    fill="#FF6B35"
+    letter-spacing="-0.5">어디갈까</text>
+
+  <!-- 작은 항공기 아이콘 (텍스트 뒤 장식) -->
+  <g transform="translate(168, 12) rotate(25)" opacity="0.18" fill="#FF6B35">
+    <path d="M0,-7 L2.5,-1 L2.5,4 L0,5 L-2.5,4 L-2.5,-1Z"/>
+    <path d="M-8,0 L8,0 L5.5,3.5 L-5.5,3.5Z"/>
+    <path d="M-3.5,5 L3.5,5 L2.5,7.5 L-2.5,7.5Z"/>
+  </g>
+</svg>
