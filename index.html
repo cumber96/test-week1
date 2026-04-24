@@ -3,16 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또 번호 생성기</title>
+    <title>어디갈까 - 한국 여행지 추천</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <button id="theme-toggle" aria-label="테마 전환">🌙</button>
-    <div class="container">
-        <h1>로또 번호 생성기</h1>
-        <div class="lotto-numbers"></div>
-        <button id="generate-btn">번호 생성</button>
-    </div>
+    <header>
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">✈️</span>
+                <span class="logo-text">어디갈까</span>
+            </div>
+            <button id="theme-toggle" aria-label="테마 전환">🌙</button>
+        </div>
+        <p class="tagline">월별 · 지역별 한국 여행지 추천 서비스</p>
+    </header>
+
+    <main>
+        <section class="filter-section">
+            <div class="filter-group">
+                <h2 class="filter-label">📅 여행 월 선택</h2>
+                <div class="month-tabs" id="month-tabs"></div>
+            </div>
+            <div class="filter-group">
+                <h2 class="filter-label">📍 지역 선택</h2>
+                <div class="region-buttons" id="region-buttons"></div>
+            </div>
+        </section>
+
+        <section class="results-section">
+            <p class="results-summary" id="results-summary"></p>
+            <div class="cards-grid" id="cards-grid"></div>
+            <div class="empty-state" id="empty-state">
+                <span class="empty-icon">🗺️</span>
+                <p>해당 조건에 맞는 여행지가 없습니다.</p>
+                <p class="empty-sub">다른 월이나 지역을 선택해 보세요!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 어디갈까 &nbsp;|&nbsp; 한국 여행의 모든 것</p>
+    </footer>
+
     <script src="main.js"></script>
 </body>
 </html>
