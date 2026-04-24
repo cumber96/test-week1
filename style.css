@@ -174,34 +174,112 @@ main {
     box-shadow: 0 2px 8px rgba(255,107,53,0.35);
 }
 
-.region-buttons {
+/* ── 1단계: 광역시 / 도 선택 ── */
+.province-row {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 8px;
 }
 
-.region-btn {
-    padding: 7px 18px;
+.prov-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.prov-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--border);
+    margin: 0 2px;
+    flex-shrink: 0;
+}
+
+.prov-group-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 2px 7px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.prov-btn {
+    padding: 7px 16px;
     border-radius: 20px;
     border: 1.5px solid var(--border);
     background: var(--surface2);
     color: var(--text-sub);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap;
 }
 
-.region-btn:hover {
+.prov-btn:hover {
     border-color: var(--primary);
     color: var(--primary);
 }
 
-.region-btn.active {
+.prov-btn.active {
     background: var(--primary);
     border-color: var(--primary);
     color: #fff;
     box-shadow: 0 2px 8px rgba(255,107,53,0.35);
+}
+
+/* ── 2단계: 세부 지역 선택 ── */
+.city-row {
+    display: none;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: var(--surface2);
+    border-radius: 10px;
+    border: 1px dashed var(--border);
+    transition: background-color 0.3s;
+}
+
+.city-breadcrumb {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary);
+    white-space: nowrap;
+    margin-right: 4px;
+}
+
+.city-btn {
+    padding: 5px 13px;
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-sub);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.city-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.city-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(255,107,53,0.3);
 }
 
 /* ── Results ── */
