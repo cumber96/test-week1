@@ -4,12 +4,57 @@ const provinceGroups = {
     "도": ["경기도", "강원도", "충청도", "전라도", "경상도", "제주도"]
 };
 
+/* ── Wikipedia 이미지 캐시 ── */
+const imageCache = {};
+
+async function fetchWikiImage(title) {
+    if (!title) return null;
+    if (title in imageCache) return imageCache[title];
+    try {
+        const res = await fetch(
+            `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`,
+            { headers: { "Api-User-Agent": "어디갈까/1.0 (travel-recommendation-site)" } }
+        );
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        const src = data.thumbnail?.source;
+        const url = src ? src.replace(/\/\d+px-/, "/800px-") : null;
+        imageCache[title] = url;
+        return url;
+    } catch {
+        imageCache[title] = null;
+        return null;
+    }
+}
+
+async function loadImages() {
+    const imgs = document.querySelectorAll(".card-bg-img[data-wiki]");
+    await Promise.allSettled(Array.from(imgs).map(async (img) => {
+        const wrap = img.closest(".card-image");
+        wrap?.classList.add("loading");
+        const url = await fetchWikiImage(img.dataset.wiki);
+        wrap?.classList.remove("loading");
+        if (!url) return;
+        img.src = url;
+        await new Promise((resolve) => {
+            img.onload = () => {
+                img.classList.add("loaded");
+                const emoji = img.parentElement?.querySelector(".card-emoji");
+                if (emoji) emoji.style.opacity = "0";
+                resolve();
+            };
+            img.onerror = resolve;
+        });
+    }));
+}
+
 /* ── 여행지 데이터 ── */
 const destinations = [
     /* ────── 서울 ────── */
     {
         name: "경복궁 & 북촌한옥마을",
         province: "서울", city: "종로·북촌",
+        wikiTitle: "Gyeongbokgung",
         bestMonths: [3, 4, 5, 10, 11],
         emoji: "🏯",
         description: "조선 왕조의 정궁과 전통 한옥 골목. 봄 벚꽃·가을 단풍과 어우러진 서울의 대표 역사 명소.",
@@ -22,6 +67,7 @@ const destinations = [
     {
         name: "한강공원 & 여의도 벚꽃",
         province: "서울", city: "여의도·한강",
+        wikiTitle: "Yeouido",
         bestMonths: [4, 5, 9, 10],
         emoji: "🌸",
         description: "여의도 벚꽃길과 반포 달빛무지개분수. 서울 시민의 봄·가을 대표 피크닉 명소.",
@@ -34,6 +80,7 @@ const destinations = [
     {
         name: "남산타워 & 명동",
         province: "서울", city: "명동·남산",
+        wikiTitle: "N Seoul Tower",
         bestMonths: [12, 1, 2],
         emoji: "🗼",
         description: "서울 야경의 상징 남산타워와 크리스마스 분위기가 절정인 명동. 겨울 낭만 여행의 중심.",
@@ -47,6 +94,7 @@ const destinations = [
     {
         name: "해운대 & 광안리",
         province: "부산", city: "해운대",
+        wikiTitle: "Haeundae Beach",
         bestMonths: [7, 8],
         emoji: "🏖️",
         description: "한국 최대 해수욕장과 화려한 광안대교 야경. 여름 피서의 성지이자 부산의 대표 관광지.",
@@ -59,6 +107,7 @@ const destinations = [
     {
         name: "감천문화마을",
         province: "부산", city: "사하·감천",
+        wikiTitle: "Gamcheon Culture Village",
         bestMonths: [3, 4, 5, 10, 11],
         emoji: "🎨",
         description: "알록달록 벽화와 좁은 골목이 매력인 '한국의 마추픽추'. 부산 서구의 예술 마을.",
@@ -72,6 +121,7 @@ const destinations = [
     {
         name: "인천 차이나타운 & 개항장",
         province: "인천", city: "중구·개항장",
+        wikiTitle: "Chinatown, Incheon",
         bestMonths: [4, 5, 9, 10],
         emoji: "🏮",
         description: "근대 개항의 역사와 이국적 문화가 공존하는 인천. 짜장면 발상지부터 송도 신도시까지 다양한 매력.",
@@ -85,6 +135,7 @@ const destinations = [
     {
         name: "남이섬 & 가평",
         province: "경기도", city: "가평",
+        wikiTitle: "Nami Island",
         bestMonths: [9, 10, 11, 12],
         emoji: "🍁",
         description: "드라마 '겨울연가' 촬영지. 단풍과 설경이 아름다운 낭만 섬과 가평 카페거리의 조합.",
@@ -97,6 +148,7 @@ const destinations = [
     {
         name: "수원화성",
         province: "경기도", city: "수원",
+        wikiTitle: "Hwaseong Fortress",
         bestMonths: [3, 4, 5, 10, 11],
         emoji: "🏰",
         description: "정조대왕이 축성한 유네스코 세계문화유산. 성곽 트레킹과 야간 조명 투어, 행리단길 카페가 인기.",
@@ -110,6 +162,7 @@ const destinations = [
     {
         name: "설악산 단풍 트레킹",
         province: "강원도", city: "속초·인제",
+        wikiTitle: "Seoraksan",
         bestMonths: [10, 11],
         emoji: "🍂",
         description: "한국 최고의 단풍 명소. 울산바위·비룡폭포의 수려한 경관과 케이블카 전망이 압도적.",
@@ -122,6 +175,7 @@ const destinations = [
     {
         name: "강릉 경포대 & 커피거리",
         province: "강원도", city: "강릉",
+        wikiTitle: "Gyeongpodae",
         bestMonths: [7, 8],
         emoji: "☕",
         description: "동해안 최대 해수욕장과 전국 최고의 카페거리 안목해변. 여름 피서와 커피 낭만의 조합.",
@@ -134,6 +188,7 @@ const destinations = [
     {
         name: "평창 스키 & 눈꽃 축제",
         province: "강원도", city: "평창",
+        wikiTitle: "Alpensia",
         bestMonths: [12, 1, 2],
         emoji: "⛷️",
         description: "2018 동계올림픽 개최지. 용평·알펜시아 스키장과 대관령 눈꽃·송어 축제로 겨울 여행의 메카.",
@@ -147,6 +202,7 @@ const destinations = [
     {
         name: "태안 해안 & 꽃지 낙조",
         province: "충청도", city: "태안",
+        wikiTitle: "Taean",
         bestMonths: [6, 7, 8],
         emoji: "🌅",
         description: "한국 최고의 낙조 명소 꽃지 해수욕장과 서해안 아름다운 해안선. 봄 꽃 박람회도 유명.",
@@ -159,6 +215,7 @@ const destinations = [
     {
         name: "공주 & 부여 백제 유적",
         province: "충청도", city: "공주·부여",
+        wikiTitle: "Baekje Historic Areas",
         bestMonths: [4, 5, 10, 11],
         emoji: "🏛️",
         description: "백제의 옛 도읍지. 공산성, 무령왕릉 등 유네스코 세계문화유산이 집결한 역사 여행지.",
@@ -172,6 +229,7 @@ const destinations = [
     {
         name: "전주한옥마을",
         province: "전라도", city: "전주",
+        wikiTitle: "Jeonju Hanok Village",
         bestMonths: [3, 4, 5, 9, 10, 11],
         emoji: "🏘️",
         description: "700여 채의 전통 한옥이 밀집한 한국 최대 한옥 마을. 한복 체험과 전통 음식의 천국.",
@@ -184,6 +242,7 @@ const destinations = [
     {
         name: "여수 밤바다",
         province: "전라도", city: "여수",
+        wikiTitle: "Yeosu",
         bestMonths: [7, 8, 9, 10],
         emoji: "🌊",
         description: "이순신 광장에서 바라보는 여수의 밤바다와 낭만 포차. 케이블카에서 내려다보는 야경이 환상적.",
@@ -196,6 +255,7 @@ const destinations = [
     {
         name: "순천만 국가정원 & 갈대밭",
         province: "전라도", city: "순천",
+        wikiTitle: "Suncheon Bay",
         bestMonths: [10, 11],
         emoji: "🌾",
         description: "드넓은 갈대밭이 황금빛으로 물드는 생태 보고. 용산 전망대에서 바라보는 철새 군무가 압도적.",
@@ -208,6 +268,7 @@ const destinations = [
     {
         name: "담양 죽녹원 & 메타세쿼이아길",
         province: "전라도", city: "담양",
+        wikiTitle: "Juknokwon",
         bestMonths: [5, 6, 10, 11],
         emoji: "🎋",
         description: "대나무 숲 죽녹원과 하늘로 뻗은 메타세쿼이아 가로수길. 사계절 다른 매력을 지닌 자연 명소.",
@@ -221,6 +282,7 @@ const destinations = [
     {
         name: "불국사 & 석굴암",
         province: "경상도", city: "경주",
+        wikiTitle: "Bulguksa",
         bestMonths: [3, 4, 5, 10, 11],
         emoji: "🛕",
         description: "유네스코 세계문화유산. 신라 천년의 불교 유적과 봄 벚꽃·가을 단풍이 어우러진 절경.",
@@ -233,6 +295,7 @@ const destinations = [
     {
         name: "동궁과 월지 & 황리단길",
         province: "경상도", city: "경주",
+        wikiTitle: "Donggung Palace and Wolji Pond",
         bestMonths: [4, 5, 10, 11],
         emoji: "🌙",
         description: "신라 별궁 연못의 환상적인 야경과 경주의 힙한 거리 황리단길. 낮과 밤 모두 즐거운 코스.",
@@ -245,6 +308,7 @@ const destinations = [
     {
         name: "통영 & 한려수도",
         province: "경상도", city: "통영",
+        wikiTitle: "Tongyeong",
         bestMonths: [4, 5, 10, 11],
         emoji: "⛵",
         description: "'동양의 나폴리'로 불리는 통영. 케이블카에서 내려다보는 한려수도 다도해 절경이 압도적.",
@@ -257,6 +321,7 @@ const destinations = [
     {
         name: "남해 독일마을 & 바래길",
         province: "경상도", city: "남해",
+        wikiTitle: "Namhae County",
         bestMonths: [4, 5, 10, 11],
         emoji: "🌻",
         description: "유럽풍 건축이 남해 바다와 어우러진 이색 마을. 봄 유채꽃과 가을 억새 트레킹이 절경.",
@@ -270,6 +335,7 @@ const destinations = [
     {
         name: "성산일출봉 & 우도",
         province: "제주도", city: "서귀포·성산",
+        wikiTitle: "Seongsan Ilchulbong",
         bestMonths: [1, 2, 3, 11, 12],
         emoji: "🌋",
         description: "유네스코 세계자연유산 성산일출봉과 배로 10분 거리 우도. 제주 겨울·봄 일출의 성지.",
@@ -282,6 +348,7 @@ const destinations = [
     {
         name: "협재 & 에메랄드 해변",
         province: "제주도", city: "제주시·한림",
+        wikiTitle: "Hyeopjae Beach",
         bestMonths: [6, 7, 8, 9],
         emoji: "🏝️",
         description: "제주 서쪽의 에메랄드빛 해변. 비양도를 조망하며 즐기는 스노클링과 여름 피서 명소.",
@@ -294,6 +361,7 @@ const destinations = [
     {
         name: "한라산 단풍 & 설경",
         province: "제주도", city: "제주 전역",
+        wikiTitle: "Hallasan",
         bestMonths: [10, 11, 1, 2],
         emoji: "🏔️",
         description: "해발 1,947m 한국 최고봉. 10-11월 단풍과 1-2월 설경이 절경을 이루는 제주의 심장.",
@@ -313,7 +381,7 @@ let selectedMonth = new Date().getMonth() + 1;
 let selectedProvince = "전체";
 let selectedCity = "전체";
 
-/* ── 렌더링: 월 탭 (Airbnb 카테고리 바) ── */
+/* ── 렌더링: 월 탭 ── */
 function renderMonthTabs() {
     const container = document.getElementById("month-tabs");
     container.innerHTML = monthNames.map((name, i) => {
@@ -328,12 +396,10 @@ function renderMonthTabs() {
         btn.addEventListener("click", () => {
             selectedMonth = parseInt(btn.dataset.month);
             renderMonthTabs();
-            // 선택된 탭으로 스크롤
             btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
             renderCards();
         });
     });
-    // 초기 로드 시 현재 월로 스크롤
     const activeTab = container.querySelector(".month-tab.active");
     if (activeTab) activeTab.scrollIntoView({ block: "nearest", inline: "center" });
 }
@@ -342,7 +408,6 @@ function renderMonthTabs() {
 function renderProvinceRow() {
     const container = document.getElementById("province-row");
     let html = `<button class="prov-btn ${selectedProvince === "전체" ? "active" : ""}" data-province="전체">전체</button>`;
-
     Object.entries(provinceGroups).forEach(([groupName, provinces]) => {
         html += `<span class="prov-divider"></span>
         <div class="prov-group">
@@ -352,7 +417,6 @@ function renderProvinceRow() {
             ).join("")}
         </div>`;
     });
-
     container.innerHTML = html;
     container.querySelectorAll(".prov-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -372,11 +436,9 @@ function renderCityRow() {
         container.style.display = "none";
         return;
     }
-
     const cities = [...new Set(
         destinations.filter(d => d.province === selectedProvince).map(d => d.city)
     )];
-
     container.style.display = "flex";
     container.innerHTML = `
         <span class="city-breadcrumb">📍 ${selectedProvince}</span>
@@ -427,6 +489,10 @@ function renderCards() {
     grid.innerHTML = filtered.map(d => `
         <div class="card">
             <div class="card-image" style="background: ${d.gradient}">
+                <img class="card-bg-img"
+                     data-wiki="${d.wikiTitle}"
+                     alt="${d.name}"
+                     loading="lazy">
                 <span class="card-emoji">${d.emoji}</span>
                 <button class="card-save" aria-label="저장">♡</button>
             </div>
@@ -459,6 +525,9 @@ function renderCards() {
             </div>
         </div>
     `).join("");
+
+    // Wikipedia 이미지 비동기 로딩
+    loadImages();
 }
 
 /* ── 테마 ── */

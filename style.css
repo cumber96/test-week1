@@ -348,11 +348,48 @@ body {
     overflow: hidden;
 }
 
+/* Wikipedia 실제 이미지 */
+.card-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: 0;
+}
+
+/* 로드 스켈레톤 shimmer */
+.card-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+        transparent 25%,
+        rgba(255,255,255,0.12) 50%,
+        transparent 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.card-image.loading::before { opacity: 1; }
+
+@keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
 .card-emoji {
     font-size: 60px;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18));
+    position: relative;
     z-index: 1;
-    transition: transform 0.3s;
+    transition: transform 0.3s, opacity 0.5s;
 }
 
 .card:hover .card-emoji { transform: scale(1.08); }
