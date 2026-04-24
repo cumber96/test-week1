@@ -242,17 +242,20 @@ main {
     box-shadow: var(--shadow-lg);
 }
 
-.card-emoji-wrap {
-    height: 100px;
+.card-hero {
+    height: 90px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 52px;
-    position: relative;
+}
+
+.card-emoji {
+    font-size: 48px;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
 }
 
 .card-body {
-    padding: 18px 20px 20px;
+    padding: 16px 18px 20px;
 }
 
 .card-top {
@@ -260,11 +263,11 @@ main {
     align-items: flex-start;
     justify-content: space-between;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .card-name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
     color: var(--text);
     line-height: 1.3;
@@ -274,7 +277,7 @@ main {
     flex-shrink: 0;
     padding: 3px 10px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     background: var(--badge-bg);
     color: var(--badge-color);
@@ -282,50 +285,63 @@ main {
 }
 
 .card-desc {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--text-sub);
     line-height: 1.6;
-    margin-bottom: 12px;
-}
-
-.card-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
     margin-bottom: 14px;
 }
 
-.tag {
-    font-size: 12px;
-    padding: 3px 10px;
-    border-radius: 10px;
-    background: var(--tag-bg);
-    color: var(--tag-color);
-    font-weight: 600;
+/* ── Info Grid (2×2) ── */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
 }
 
-.card-highlights {
+.info-section {
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    transition: background-color 0.3s;
+}
+
+.info-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.info-icon {
+    font-size: 13px;
+}
+
+.info-list {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
 }
 
-.card-highlights li {
-    font-size: 13px;
-    color: var(--highlight-color);
-    padding-left: 16px;
-    position: relative;
+.info-list li {
+    font-size: 11.5px;
+    color: var(--text);
     line-height: 1.4;
+    padding-left: 10px;
+    position: relative;
 }
 
-.card-highlights li::before {
-    content: "✓";
+.info-list li::before {
+    content: "·";
     position: absolute;
     left: 0;
     color: var(--primary);
-    font-weight: 700;
-    font-size: 11px;
+    font-weight: 900;
 }
 
 /* ── Empty State ── */
